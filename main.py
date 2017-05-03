@@ -1,48 +1,56 @@
 from pairwise import algorithms
 from Bio import AlignIO, SeqIO
 
+
 def menu_principal():
     """Menú Principal.
 
     Muestra el menú principal de opciones.
-	
-	Retorna
-	------
-	int
-		Opción ingresada por el usuario.
-	"""
+
+        Retorna
+        ------
+        int
+                Opción ingresada por el usuario.
+        """
     print("-------------------Menú-------------------")
     print("[1] Carga de Datos")
     print("[2] Aplicar Needleman-Wunsch")
     print("[S] Salir")
     return input("Ingrese la opción que desea: ")
 
+
 def submenu_item_sequences():
     print("-------------------Elija un método-------------------")
     print("[1] Por Archivos")
     print("[2] Tecleadas interactivamente")
     return input("Ingrese la opción que desea: ")
-	
+
 
 def caso_1():
-	print("-------------------Secuencia Alfa-------------------")
-	option = submenu_item_sequences()
-	if(option == '1'):
-		file_path = input("Ingrese el path: ")
-		file_type = input("Ingrese el tipo: ")
-		alignment = AlignIO.read(file_path, file_type)
-		print(alignment[0].seq)
-	if(option == '2'):
-		print("Interactivamente")
-	print("-------------------Secuencia Beta-------------------")
-	option = submenu_item_sequences()
-	if(option == '1'):
-		file_path = input("Ingrese el path: ")
-		file_type = input("Ingrese el tipo: ")
-		alignment = AlignIO.read(file_path, file_type)
-		print(alignment[0].seq)
-	if(option == '2'):
-		print("Interactivamente")
+    print("-------------------Secuencia Alfa-------------------")
+    option = submenu_item_sequences()
+    if(option == '1'):
+        file_path = input("Ingrese el path: ")
+        file_type = input("Ingrese el tipo: ")
+        try:
+            alpha = AlignIO.read(file_path, file_type)
+        except:
+            print("Inválido, vuelva a intentar...")
+            return
+    if(option == '2'):
+        print("Interactivamente")
+    print("-------------------Secuencia Beta-------------------")
+    option = submenu_item_sequences()
+    if(option == '1'):
+        file_path = input("Ingrese el path: ")
+        file_type = input("Ingrese el tipo: ")
+        try:
+            beta = AlignIO.read(file_path, file_type)
+        except:
+            print("Inválido, vuelva a intentar...")
+            return
+    if(option == '2'):
+        print("Interactivamente")
 
 
 def caso_2():
