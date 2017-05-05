@@ -25,8 +25,8 @@ def needleman_wunsch(seq1, seq2):
     m, n = len(seq2), len(seq1)  # length of two sequences
     #---------
     dt = np.dtype([('diagonal', np.str, 1),
-                   ('up', np.str, 1), ('left', np.str, 1)])     
-    pt_mat = np.zeros((m+1,n+1), dtype=dt)
+                   ('up', np.str, 1), ('left', np.str, 1)])
+    pt_mat = np.zeros((m + 1, n + 1), dtype=dt)
     print(pt_mat[0][0])
 
     #---------
@@ -34,8 +34,10 @@ def needleman_wunsch(seq1, seq2):
     # Calculate DP table
     for i in range(0, m + 1):
         score_matrix[i][0] = gap_penalty * i
+        pt_mat[i][0]['up'] = 'U'
     for j in range(0, n + 1):
         score_matrix[0][j] = gap_penalty * j
+        pt_mat[0][j]['left'] = 'L'
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             diagonal = score_matrix[i - 1][j - 1] + \
@@ -108,11 +110,11 @@ def needleman_wunsch(seq1, seq2):
     align1 = align1[::-1]  # TODO reverse sequence 1
     align2 = align2[::-1]  # TODO reverse sequence 2
     print(align1, align2)
-    return score_matrix,pt_mat
+    return score_matrix, pt_mat
 
 
 #-------------------------------
-plt.rcParams["figure.figsize"] = 4, 5
+plt.rcParams["figure.figsize"] = 6, 7
 param = {"grid.linewidth": 1.6,
          "grid.color": "lightgray",
          "axes.linewidth": 1.6,
@@ -123,15 +125,7 @@ plt.rcParams.update(param)
 headh = seq1
 headv = seq2
 
-v,pt_mat = needleman_wunsch(seq1, seq2)
-'''arrows = np.random.randint(0, v.shape[1], size=(14, 4))
-print(arrows)
-opt = np.array([(0, 1), (1, 0), (1, 1)])
-arrows[:, 2:] = arrows[:, :2] + opt[np.random.randint(0, 3, size=14)]
-print(arrows)
-arrowsb = np.random.randint(0, v.shape[1], size=(7, 4))
-optb = np.array([(0, 1), (1, 0), (1, 1)])
-arrowsb[:, 2:] = arrowsb[:, :2] + optb[np.random.randint(0, 3, size=7)]'''
+v, pt_mat = needleman_wunsch(seq1, seq2)
 
 # Plot
 fig, ax = plt.subplots()
@@ -155,17 +149,25 @@ plt.tick_params(axis='both', which='both', bottom='off', top='off',
 ax.grid(True, which='minor')
 
 
-arrowprops = dict(facecolor='crimson', alpha=0.5, lw=0,
+arrowprops = dict(facecolor='blue', alpha=0.5, lw=0,
                   shrink=0.2, width=2, headwidth=7, headlength=7)
+
+
+print(pt_mat)
+for i in range(1,pt_mat.shape[0]):
+    for j in range(1,pt_mat.shape[1]):
+        if(pt_mat[i][j]['left'] != ''):
+            ax.annotate("", xy=(j-1,i),
+                        xytext=(j,i), arrowprops=arrowprops)
+        if(pt_mat[i][j]['diagonal'] != ''):
+            ax.annotate("", xy=(j-1,i-1),
+                        xytext=(j,i), arrowprops=arrowprops)
+        if(pt_mat[i][j]['up'] != ''):
+            ax.annotate("", xy=(j,i-1),
+                        xytext=(j,i), arrowprops=arrowprops)
+
+arrowprops.update(facecolor='crimson')
 for i in range(arrows.shape[0]):
     ax.annotate("", xy=arrows[i, 2:],  # origin
                 xytext=arrows[i, :2], arrowprops=arrowprops)
-arrowprops.update(facecolor='blue')
-for i in range(v.shape[0]):
-    for j in range(v.shape[1]):
-        print(pt_mat[i][j])
-'''arrowprops.update(facecolor='blue')
-for i in range(arrowsb.shape[0]):
-    ax.annotate("", xy=arrowsb[i, 2:],
-                xytext=arrowsb[i, :2], arrowprops=arrowprops)'''
 plt.show()

@@ -1,85 +1,242 @@
-from pairwise import algorithms
-from Bio import AlignIO, SeqIO
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys
+import os
+
+# TODO see more:
+# https://github.com/biopython/biopython/blob/master/Bio/pairwise2.py
+score_only = False
+# Penalty scores
+penalty = {'MATCH': 1, 'MISMATCH': -1, 'GAP': -2}
+# List of the algorithms
+algorithms = ['Needleman–Wunsch (Global)',
+              'Smith–Waterman (Local)',
+              'Semiglobal',
+              'Global con K-Band']
+# Main definition - constants
+menu_actions = {}
+
+# =======================
+#     MENUS FUNCTIONS
+# =======================
+
+# Main menu
 
 
-def menu_principal():
-    """Menú Principal.
+def main_menu():
+    os.system('clear')
 
-    Muestra el menú principal de opciones.
+    print ("Bienvenido,\n")
+    print ("Por favor ingrese alguna opción:")
+    print ("a. Ayuda")
+    print ("b. Tablas")
+    print ("c. Listar")
+    print ("d. Val")
+    print ("e. Match")
+    print ("f. Mismatch")
+    print ("g. Gap")
+    print ("0. Salir")
+    choice = input(" >>  ")
+    exec_menu(choice)
 
-        Retorna
-        ------
-        int
-                Opción ingresada por el usuario.
-        """
-    print("-------------------Menú-------------------")
-    print("[1] Carga de Datos")
-    print("[2] Aplicar Needleman-Wunsch")
-    print("[S] Salir")
-    return input("Ingrese la opción que desea: ")
+    return
 
-
-def submenu_item_sequences():
-    print("-------------------Elija un método-------------------")
-    print("[1] Por Archivos")
-    print("[2] Tecleadas interactivamente")
-    return input("Ingrese la opción que desea: ")
+# Execute menu
 
 
-def caso_1():
-    print("-------------------Secuencia Alfa-------------------")
-    option = submenu_item_sequences()
-    if(option == '1'):
-        file_path = input("Ingrese el path: ")
-        file_type = input("Ingrese el tipo: ")
+def exec_menu(choice):
+    os.system('clear')
+    ch = choice.lower()
+    ch = ch.split()
+    len_of_ch = len(ch)
+    if len_of_ch == 0:
+        menu_actions['main_menu']()
+    if len_of_ch == 1:
         try:
-            alpha = AlignIO.read(file_path, file_type)
-        except:
-            print("Inválido, vuelva a intentar...")
-            return
-    if(option == '2'):
-        print("Interactivamente")
-    print("-------------------Secuencia Beta-------------------")
-    option = submenu_item_sequences()
-    if(option == '1'):
-        file_path = input("Ingrese el path: ")
-        file_type = input("Ingrese el tipo: ")
+            menu_actions[ch[0]]()
+        except KeyError:
+            print ("Invalid selection, please try again.\n")
+            menu_actions['main_menu']()
+    if len_of_ch == 2 and ch[0] == 'a':
+        menu_actions[ch[0]]('nw')
+
+    return
+
+# =========
+# a.Ayuda
+# =========
+def opt_ayuda(algorithm=''):
+    if algorithm == '':
+        help(opt_ayuda)
+    if algorithm == 'needleman-wunsch':
+        print("Call help NW")
+    print ("9. Regresar")
+    print ("0. Salir")
+    choice = input(" >>  ")
+    exec_menu(choice)
+    return
+
+# =========
+# b.Tablas
+# =========
+
+def change_score_only():
+    global score_only
+    print("Desea cambiar el Bit de estado (s/n):")
+    choice = input(" >>  ")
+    choice = choice.lower()
+    if (choice == "s"):
+        score_only = not score_only
+        print("Bit cambiado")
+        show_score_only()
+
+
+def show_score_only():
+    global score_only
+    print("Estado del Bit (Mostrar tablas): ", end='')
+    print("No" if score_only else "Sí")
+
+
+def opt_tablas():
+    global score_only
+    show_score_only()
+    change_score_only()
+    back_or_exit_choice()
+    return
+
+# =========
+# c.Listar
+# =========
+
+def show_algorithms():
+    print ('%s' % '\n'.join(map(str, algorithms)))
+
+
+def opt_algoritmos():
+    show_algorithms()
+    back_or_exit_choice()
+    return
+
+
+def show_penalty():
+    print(penalty)
+    return
+
+# =========
+# d.Val
+# =========
+
+def opt_val():
+    show_penalty()
+    back_or_exit_choice()
+    return
+
+# =========
+# e.Match
+# =========
+
+def give_me_a_number():
+    while True:
         try:
-            beta = AlignIO.read(file_path, file_type)
+            return int(input("Enter a number: "))
         except:
-            print("Inválido, vuelva a intentar...")
-            return
-    if(option == '2'):
-        print("Interactivamente")
+            print("Vuelva a intentar...")
+            pass
 
 
-def caso_2():
-    seq1 = "SEND"
-    seq2 = "AND"
-    # TODO cambiar
-    seq1 = list(seq1)
-    seq2 = list(seq2)
-    algorithms.needleman_wunsch(seq1, seq2)
+def change_one_penalty(name):
+    global penalty
+    print("Desea cambiar el valor (s/n):")
+    choice = input(" >>  ")
+    choice = choice.lower()
+    if (choice == "s"):
+        value = give_me_a_number()
+        penalty[name] = value
+        print("Valor cambiado")
+        show_one_penalty(name)
 
 
-def caso_3():
-    print("caso 3")
+def show_one_penalty(name):
+    print("Valor del "+name+": ", penalty[name])
 
 
-def caso_salir():
-    print("Fin del programa")
+
+def opt_match():
+    penalty_name = 'MATCH'
+    show_one_penalty(penalty_name)
+    change_one_penalty(penalty_name)
+    back_or_exit_choice()
+    return
+
+# =========
+# f.Mismatch
+# =========
+
+def opt_mismatch():
+    penalty_name = 'MISMATCH'
+    show_one_penalty(penalty_name)
+    change_one_penalty(penalty_name)
+    back_or_exit_choice()
+    return
+
+# =========
+# g.Gap
+# =========
+
+def opt_gap():
+    penalty_name = 'GAP'
+    show_one_penalty(penalty_name)
+    change_one_penalty(penalty_name)
+    back_or_exit_choice()
+    return
+
+# =========
+# Back or Exit
+# =========
+
+def back_or_exit_choice():
+    print("---")
+    print ("9. Regresar")
+    print ("0. Salir")
+    choice = input(" >>  ")
+    exec_menu(choice)
+    return
 
 
-def caso_invalido():
-    print('Opción Inválida. Intente de nuevo.')
+def back():
+    menu_actions['main_menu']()
+
+# Exit program
 
 
-# Main
-OPCIONES = {'1': caso_1, '2': caso_2, '3': caso_3,
-            's': caso_salir, 'S': caso_salir}
-while True:
-    OPCION = menu_principal()
-    f = OPCIONES.get(OPCION, caso_invalido)
-    f()
-    if OPCION == 's' or OPCION == 'S':
-        break  # break del programa
+def exit():
+    sys.exit()
+
+# =======================
+#    MENUS DEFINITIONS
+# =======================
+
+
+# Menu definition
+menu_actions = {
+    'main_menu': main_menu,
+    'a': opt_ayuda,
+    'b': opt_tablas,
+    'c': opt_algoritmos,
+    'd': opt_val,
+    'e': opt_match,
+    'f': opt_mismatch,
+    'g': opt_gap,
+    '9': back,
+    '0': exit,
+}
+
+# =======================
+#      MAIN PROGRAM
+# =======================
+
+# Main Program
+if __name__ == "__main__":
+    # Launch main menu
+    main_menu()
