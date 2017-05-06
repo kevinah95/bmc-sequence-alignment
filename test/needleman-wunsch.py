@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from sys import *
-seq1='GCATGCU'
-seq2='GATTACA'
+seq1='SEND'
+seq2='AND'
 
 print('''
 # Both sequences are similar to the human protein huntingtin. 
@@ -35,16 +35,20 @@ except ImportError:
 
 match=1.
 mismatch=-1.
-gap=-1.
+gap=-2.
 def match_score(alpha, beta):
     if alpha == beta:
         return match
     else:
         return mismatch
+val = 0
 for i in range(rows):
-    a[i][0] = 0
+    a[i][0] = val
+    val += gap
+val=0
 for j in range(cols):
-    a[0][j] = 0
+    a[0][j] = val
+    val += gap
 for i in range(1,rows):
     for j in range(1,cols):
         # Dynamic programing -- aka. divide and conquer:

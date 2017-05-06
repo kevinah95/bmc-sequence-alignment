@@ -1,1 +1,1 @@
-from .algorithms import needleman_wunsch
+from .needleman_wunsch import needleman_wunsch

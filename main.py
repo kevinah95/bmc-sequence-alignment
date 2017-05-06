@@ -3,6 +3,8 @@
 
 import sys
 import os
+from Bio import SeqIO
+from Bio.Seq import Seq
 
 # TODO see more:
 # https://github.com/biopython/biopython/blob/master/Bio/pairwise2.py
@@ -14,6 +16,10 @@ algorithms = ['Needleman–Wunsch (Global)',
               'Smith–Waterman (Local)',
               'Semiglobal',
               'Global con K-Band']
+# Sequences
+sequence_alpha = None
+sequence_beta = None
+
 # Main definition - constants
 menu_actions = {}
 
@@ -35,7 +41,9 @@ def main_menu():
     print ("d. Val")
     print ("e. Match")
     print ("f. Mismatch")
-    print ("g. Gap")
+    print ("g. Gap")    
+    print ("h. Secuencia ALPHA")
+    print ("i. Secuencia BETA")
     print ("0. Salir")
     choice = input(" >>  ")
     exec_menu(choice)
@@ -66,6 +74,8 @@ def exec_menu(choice):
 # =========
 # a.Ayuda
 # =========
+
+
 def opt_ayuda(algorithm=''):
     if algorithm == '':
         help(opt_ayuda)
@@ -80,6 +90,7 @@ def opt_ayuda(algorithm=''):
 # =========
 # b.Tablas
 # =========
+
 
 def change_score_only():
     global score_only
@@ -109,6 +120,7 @@ def opt_tablas():
 # c.Listar
 # =========
 
+
 def show_algorithms():
     print ('%s' % '\n'.join(map(str, algorithms)))
 
@@ -127,6 +139,7 @@ def show_penalty():
 # d.Val
 # =========
 
+
 def opt_val():
     show_penalty()
     back_or_exit_choice()
@@ -135,6 +148,7 @@ def opt_val():
 # =========
 # e.Match
 # =========
+
 
 def give_me_a_number():
     while True:
@@ -158,8 +172,7 @@ def change_one_penalty(name):
 
 
 def show_one_penalty(name):
-    print("Valor del "+name+": ", penalty[name])
-
+    print("Valor del " + name + ": ", penalty[name])
 
 
 def opt_match():
@@ -173,6 +186,7 @@ def opt_match():
 # f.Mismatch
 # =========
 
+
 def opt_mismatch():
     penalty_name = 'MISMATCH'
     show_one_penalty(penalty_name)
@@ -184,6 +198,7 @@ def opt_mismatch():
 # g.Gap
 # =========
 
+
 def opt_gap():
     penalty_name = 'GAP'
     show_one_penalty(penalty_name)
@@ -191,6 +206,71 @@ def opt_gap():
     back_or_exit_choice()
     return
 
+# =========
+# h. Ingresar secuencias
+# =========
+
+def method_file(obj):
+    file_path = obj
+    try:
+        print("Ingrese el formato del archivo: ")
+        file_format = input(" >>  ")
+        first_record = next(SeqIO.parse(file_path, file_format))
+    except:
+        print("Vuelva a intentarlo")
+        pass
+    return first_record
+
+def select_method_of_input(name):
+    sequence = ""
+    print("Para la secuencia ",name)
+    print("Ingrese la secuencia o el path del archivo:")
+    obj = input(" >>  ")
+    if (os.path.exists(obj)):
+        sequence = method_file(obj)
+    else:
+        obj = obj.upper().split()  # upper sequence and split to get first
+        sequence = Seq(obj[0])
+    return sequence
+
+# =========
+# h. Secuencia ALPHA
+# =========
+def show_alpha_sequence():
+    global sequence_alpha
+    print("Secuencia ALPHA")
+    print(sequence_alpha if sequence_alpha else "No se ha ingresado la secuencia")
+    print("")
+    print("Desea cambiar el valor (s/n):")
+    choice = input(" >>  ")
+    choice = choice.lower()
+    if (choice == "s"):
+        sequence_alpha = select_method_of_input("ALPHA")
+
+def opt_change_alpha_sequence():
+    show_alpha_sequence()
+    back_or_exit_choice()
+    return
+
+# =========
+# i. Secuencia BETA
+# =========
+
+def show_beta_sequence():
+    global sequence_beta
+    print("Secuencia BETA")
+    print(sequence_beta if sequence_beta else "No se ha ingresado la secuencia")
+    print("")
+    print("Desea cambiar el valor (s/n):")
+    choice = input(" >>  ")
+    choice = choice.lower()
+    if (choice == "s"):
+        sequence_beta = select_method_of_input("BETA")
+
+def opt_change_beta_sequence():
+    show_beta_sequence()
+    back_or_exit_choice()
+    return
 # =========
 # Back or Exit
 # =========
@@ -228,6 +308,8 @@ menu_actions = {
     'e': opt_match,
     'f': opt_mismatch,
     'g': opt_gap,
+    'h': opt_change_alpha_sequence,
+    'i': opt_change_beta_sequence,
     '9': back,
     '0': exit,
 }

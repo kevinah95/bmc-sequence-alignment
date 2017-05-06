@@ -1,17 +1,15 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
+from Bio.Seq import Seq
 #------------------------------
-seq1 = "SEND"
-seq2 = "AND"
-# TODO cambiar
-seq1 = list(seq1)
-seq2 = list(seq2)
+seq1 = Seq("GATCCA")
+seq2 = Seq("GTGCCT")
 
 match_award = 1
 mismatch_penalty = -1
 gap_penalty = -2
-arrows = np.array([[0, 0, 0, 0]])
+arrows = None
 
 
 def match_score(alpha, beta):
@@ -26,12 +24,17 @@ def needleman_wunsch(seq1, seq2):
     #---------
     dt = np.dtype([('diagonal', np.str, 1),
                    ('up', np.str, 1), ('left', np.str, 1)])
+    """
+    Pointer Matrix size: (m + 1) x (n + 1)
+    Datatype: 3 tuple to save direction of the path
+    
+    For more info: https://docs.scipy.org/doc/numpy/user/basics.rec.html
+    """
     pt_mat = np.zeros((m + 1, n + 1), dtype=dt)
-    print(pt_mat[0][0])
 
     #---------
     score_matrix = np.zeros((m + 1, n + 1), dtype=int)      # the DP table
-    # Calculate DP table
+    # Calculate DynamicProgramming table
     for i in range(0, m + 1):
         score_matrix[i][0] = gap_penalty * i
         pt_mat[i][0]['up'] = 'U'
@@ -53,8 +56,9 @@ def needleman_wunsch(seq1, seq2):
             if (left == max_pointer):
                 pt_mat[i][j]['left'] = 'L'
 
-    print(score_matrix)
-    print(pt_mat)
+    # print(score_matrix)
+    # print(pt_mat)
+
     # Traceback and compute the alignment
     align1, align2 = '', ''
     i, j = m, n  # start from the bottom right cell
@@ -84,15 +88,13 @@ def needleman_wunsch(seq1, seq2):
             j -= 1
         a[:, 2:] = j, i
         if first:
+            # First loop copy a
             arrows = np.copy(a)
             first = False
         else:
+            # Concatenate origin-target
             arrows = np.concatenate((arrows, a), axis=0)
-
-        #print("target ",i,j,end='\n')
     a[:, :2] = a[:, 2:]
-    print(arrows)
-    print(a)
 
     # Finish tracing up to the top left cell
     while i > 0:
@@ -107,14 +109,11 @@ def needleman_wunsch(seq1, seq2):
         j -= 1
         a[:, 2:] = j, i
         arrows = np.concatenate((arrows, a), axis=0)
-    align1 = align1[::-1]  # TODO reverse sequence 1
-    align2 = align2[::-1]  # TODO reverse sequence 2
-    print(align1, align2)
     return score_matrix, pt_mat
 
 
 #-------------------------------
-plt.rcParams["figure.figsize"] = 6, 7
+plt.rcParams["figure.figsize"] = 4, 5
 param = {"grid.linewidth": 1.6,
          "grid.color": "lightgray",
          "axes.linewidth": 1.6,
@@ -152,22 +151,22 @@ ax.grid(True, which='minor')
 arrowprops = dict(facecolor='blue', alpha=0.5, lw=0,
                   shrink=0.2, width=2, headwidth=7, headlength=7)
 
-
-print(pt_mat)
-for i in range(1,pt_mat.shape[0]):
-    for j in range(1,pt_mat.shape[1]):
+# all paths
+for i in range(1, pt_mat.shape[0]):
+    for j in range(1, pt_mat.shape[1]):
         if(pt_mat[i][j]['left'] != ''):
-            ax.annotate("", xy=(j-1,i),
-                        xytext=(j,i), arrowprops=arrowprops)
+            ax.annotate("", xy=(j - 1, i),
+                        xytext=(j, i), arrowprops=arrowprops)
         if(pt_mat[i][j]['diagonal'] != ''):
-            ax.annotate("", xy=(j-1,i-1),
-                        xytext=(j,i), arrowprops=arrowprops)
+            ax.annotate("", xy=(j - 1, i - 1),
+                        xytext=(j, i), arrowprops=arrowprops)
         if(pt_mat[i][j]['up'] != ''):
-            ax.annotate("", xy=(j,i-1),
-                        xytext=(j,i), arrowprops=arrowprops)
+            ax.annotate("", xy=(j, i - 1),
+                        xytext=(j, i), arrowprops=arrowprops)
 
+# optimal path
 arrowprops.update(facecolor='crimson')
 for i in range(arrows.shape[0]):
-    ax.annotate("", xy=arrows[i, 2:],  # origin
+    ax.annotate("", xy=arrows[i, 2:],
                 xytext=arrows[i, :2], arrowprops=arrowprops)
 plt.show()
