@@ -2,7 +2,10 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 from Bio.Seq import Seq
-from needleman_wunsch import needleman_wunsch
+if __name__ == '__main__':
+    from needleman_wunsch import needleman_wunsch
+else:
+    from .needleman_wunsch import needleman_wunsch
 
 #-------------------------------
 def plot_nw(seq_alpha_col,seq_beta_row):
@@ -11,8 +14,8 @@ def plot_nw(seq_alpha_col,seq_beta_row):
         print("Alguna de las secuencias está vacía.")
         return
 
-
-    plt.rcParams["figure.figsize"] = 6, 7
+    
+    plt.rcParams["figure.figsize"] = 4, 5
     param = {"grid.linewidth": 1.6,
             "grid.color": "lightgray",
             "axes.linewidth": 1.6,
@@ -35,6 +38,7 @@ def plot_nw(seq_alpha_col,seq_beta_row):
             ax.text(j, i, score_matrix[i, j], ha="center", va="center")
     for i, l in enumerate(headh):
         ax.text(i + 1, -1, l, ha="center", va="center", fontweight="semibold")
+        print(i,l)
     for i, l in enumerate(headv):
         ax.text(-1, i + 1, l, ha="center", va="center", fontweight="semibold")
 
@@ -70,6 +74,7 @@ def plot_nw(seq_alpha_col,seq_beta_row):
                     xytext=arrows[i, :2], arrowprops=arrowprops)
     plt.show()
 
-alpha = Seq("SEND")
-beta = Seq("AND")
-plot_nw(alpha,beta)
+if __name__ == '__main__':
+    alpha = Seq("SEND")
+    beta = Seq("AND")
+    plot_nw(alpha,beta)

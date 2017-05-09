@@ -11,43 +11,6 @@ def match_score(alpha, beta):
     else:
         return penalty['MISMATCH']
 
-def finalize(align1, align2):
-    align1 = align1[::-1]    #reverse sequence 1
-    align2 = align2[::-1]    #reverse sequence 2
-    
-    i,j = 0,0
-    
-    #calcuate identity, score and aligned sequeces
-    symbol = ''
-    found = 0
-    score = 0
-    identity = 0
-    for i in range(0,len(align1)):
-        # if two AAs are the same, then output the letter
-        if align1[i] == align2[i]:                
-            symbol = symbol + align1[i]
-            identity = identity + 1
-            score += match_score(align1[i], align2[i])
-    
-        # if they are not identical and none of them is gap
-        elif align1[i] != align2[i] and align1[i] != '-' and align2[i] != '-': 
-            score += match_score(align1[i], align2[i])
-            symbol += ' '
-            found = 0
-    
-        #if one of them is a gap, output a space
-        elif align1[i] == '-' or align2[i] == '-':          
-            symbol += ' '
-            score += penalty['GAP']
-    
-    identity = float(identity) / len(align1) * 100
-    
-    print ('Identity =', "%3.3f" % identity, 'percent')
-    print ('Score =', score)
-    print (align1)
-    print (symbol)
-    print (align2)
-
 
 def needleman_wunsch(seq_alpha_col, seq_beta_row, score_only):
     if not seq_alpha_col or not seq_beta_row:
@@ -68,20 +31,23 @@ def needleman_wunsch(seq_alpha_col, seq_beta_row, score_only):
     score_matrix = np.zeros((m + 1, n + 1), dtype=int)      # the DP table
     # Calculate DP table
     for i in range(0, m + 1):
-        score_matrix[i][0] = penalty['GAP'] * i
         if not score_only:
             pointer_mat[i][0]['up'] = 'U'
     for j in range(0, n + 1):
-        score_matrix[0][j] = penalty['GAP'] * j
         if not score_only:
             pointer_mat[0][j]['left'] = 'L'
+    max_score = 0
+    max_pos   = None    # The row and columbn of the highest score in matrix.
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             diagonal = score_matrix[i - 1][j - 1] + \
                 match_score(seq_beta_row[i - 1], seq_alpha_col[j - 1])
             up = score_matrix[i - 1][j] + penalty['GAP']
             left = score_matrix[i][j - 1] + penalty['GAP']
-            max_pointer = max(diagonal, up, left)
+            max_pointer = max(0,diagonal, up, left)
+            if max_pointer > max_score:
+                max_score = max_pointer
+                max_pos   = (i, j)
             score_matrix[i][j] = max_pointer
             if not score_only:
                 if (diagonal == max_pointer):
@@ -149,7 +115,7 @@ def needleman_wunsch(seq_alpha_col, seq_beta_row, score_only):
             a[:, 2:] = j, i
             arrows = np.concatenate((arrows, a), axis=0)
     
-    finalize(align1, align2)
+    
     return score_matrix, pointer_mat, arrows
 if __name__ == '__main__':
     alpha = Seq("SEND")

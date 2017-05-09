@@ -5,6 +5,7 @@ import sys
 import os
 from Bio import SeqIO
 from Bio.Seq import Seq
+from pairwise import plot_nw,needleman_wunsch
 
 # TODO see more:
 # https://github.com/biopython/biopython/blob/master/Bio/pairwise2.py
@@ -44,6 +45,7 @@ def main_menu():
     print ("g. Gap")    
     print ("h. Secuencia ALPHA")
     print ("i. Secuencia BETA")
+    print ("j. Needleman-Wunsch")
     print ("0. Salir")
     choice = input(" >>  ")
     exec_menu(choice)
@@ -271,6 +273,19 @@ def opt_change_beta_sequence():
     show_beta_sequence()
     back_or_exit_choice()
     return
+
+# =========
+# j. Needleman-Wunsch
+# =========
+def opt_needleman_wunsch():
+    if score_only :
+        needleman_wunsch.needleman_wunsch(sequence_alpha,sequence_beta,score_only)
+    else:
+        plot_nw.plot_nw(sequence_alpha,sequence_beta)
+    back_or_exit_choice()
+    return
+
+
 # =========
 # Back or Exit
 # =========
@@ -310,6 +325,7 @@ menu_actions = {
     'g': opt_gap,
     'h': opt_change_alpha_sequence,
     'i': opt_change_beta_sequence,
+    'j': opt_needleman_wunsch,
     '9': back,
     '0': exit,
 }
