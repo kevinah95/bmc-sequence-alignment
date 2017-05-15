@@ -3,12 +3,12 @@ import matplotlib.ticker as ticker
 import numpy as np
 from Bio.Seq import Seq
 if __name__ == '__main__':
-    from needleman_wunsch import needleman_wunsch
+    from smith_waterman import smith_waterman
 else:
-    from .needleman_wunsch import needleman_wunsch
+    from .smith_waterman import smith_waterman
 
 #-------------------------------
-def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
+def plot_sw(seq_alpha_col,seq_beta_row,p_penalty):
 
     if not seq_alpha_col or not seq_beta_row:
         print("Alguna de las secuencias está vacía.")
@@ -27,7 +27,7 @@ def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
     headh = seq_alpha_col
     headv = seq_beta_row
 
-    score_matrix, pt_mat, arrows = needleman_wunsch(seq_alpha_col,seq_beta_row,p_penalty,score_only=False)
+    score_matrix, pt_mat, arrows = smith_waterman(seq_alpha_col,seq_beta_row,p_penalty,score_only=False)
 
     # Plot
     fig, ax = plt.subplots()
@@ -79,11 +79,11 @@ def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
     #------------
     
     plt.gca().set_aspect('auto')
-    plt.savefig('output/output-nw.pdf', dpi=600)
+    plt.savefig('output/output-sw.pdf', dpi=600)
     #plt.show()
 
 if __name__ == '__main__':
-    alpha = Seq("MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHG")
-    beta = Seq("MVHLTPEEKSAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLSTPDAVMGNPK")
-    penalty = {'MATCH': 1, 'MISMATCH': -1, 'GAP': -1}
-    plot_nw(alpha,beta,penalty)
+    alpha = Seq("TGTTACGG")
+    beta = Seq("GGTTGACTA")
+    penalty = {'MATCH': 3, 'MISMATCH': -3, 'GAP': -2}
+    plot_sw(alpha,beta,penalty)

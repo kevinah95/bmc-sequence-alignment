@@ -209,7 +209,7 @@ def opt_gap():
     return
 
 # =========
-# h. Ingresar secuencias
+# Metodos para Ingresar secuencias
 # =========
 
 def method_file(obj):
@@ -277,11 +277,12 @@ def opt_change_beta_sequence():
 # =========
 # j. Needleman-Wunsch
 # =========
+@profile
 def opt_needleman_wunsch():
     if score_only :
-        needleman_wunsch.needleman_wunsch(sequence_alpha,sequence_beta,score_only)
+        needleman_wunsch.needleman_wunsch(sequence_alpha,sequence_beta,penalty,score_only)
     else:
-        plot_nw.plot_nw(sequence_alpha,sequence_beta)
+        plot_nw.plot_nw(sequence_alpha,sequence_beta,penalty)
     back_or_exit_choice()
     return
 
@@ -306,6 +307,13 @@ def back():
 
 
 def exit():
+    print("Realizado por:")
+    print("-Kevin Hernández Rostrán")
+    print("-Diana Vargas Hernández")
+    print("Introducción a la Biología Molecular Computacional")
+    print("Profesor: Esteban Arias Méndez")
+    print("Periodo: I Semestre, 2017")
+    print("Escuela de Computación, Instituto Tecnológico de Costa Rica")
     sys.exit()
 
 # =======================
