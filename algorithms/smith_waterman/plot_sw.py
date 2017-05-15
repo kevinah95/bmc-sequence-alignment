@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
+import datetime
 from Bio.Seq import Seq
 if __name__ == '__main__':
     from smith_waterman import smith_waterman
@@ -79,11 +80,12 @@ def plot_sw(seq_alpha_col,seq_beta_row,p_penalty):
     #------------
     
     plt.gca().set_aspect('auto')
-    plt.savefig('output/output-sw.pdf', dpi=600)
+    time = '{:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
+    plt.savefig("output/smith_waterman/output-sw_"+time+".pdf", dpi=600)
     #plt.show()
 
 if __name__ == '__main__':
-    alpha = Seq("TGTTACGG")
-    beta = Seq("GGTTGACTA")
-    penalty = {'MATCH': 3, 'MISMATCH': -3, 'GAP': -2}
+    alpha = Seq("GTACGTCGG")
+    beta = Seq("ATACATGTCT")
+    penalty = {'MATCH': 8, 'MISMATCH': -5, 'GAP': -3}
     plot_sw(alpha,beta,penalty)

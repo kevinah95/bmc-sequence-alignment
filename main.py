@@ -5,7 +5,7 @@ import sys
 import os
 from Bio import SeqIO
 from Bio.Seq import Seq
-from pairwise import plot_nw,needleman_wunsch
+from algorithms.needleman_wunsch import plot_nw,needleman_wunsch
 
 # TODO see more:
 # https://github.com/biopython/biopython/blob/master/Bio/pairwise2.py
@@ -277,7 +277,7 @@ def opt_change_beta_sequence():
 # =========
 # j. Needleman-Wunsch
 # =========
-@profile
+#@profile
 def opt_needleman_wunsch():
     if score_only :
         needleman_wunsch.needleman_wunsch(sequence_alpha,sequence_beta,penalty,score_only)

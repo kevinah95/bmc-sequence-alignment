@@ -1,21 +1,22 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
+import datetime
 from Bio.Seq import Seq
 if __name__ == '__main__':
-    from kband import kband
+    from needleman_wunsch import needleman_wunsch
 else:
-    from .kband import kband
+    from .needleman_wunsch import needleman_wunsch
 
 #-------------------------------
-def plot_kb(seq_alpha_col,seq_beta_row,k_value,p_penalty):
+def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
 
     if not seq_alpha_col or not seq_beta_row:
         print("Alguna de las secuencias está vacía.")
         return
 
     
-    plt.rcParams["figure.figsize"] = 18, 18
+    plt.rcParams["figure.figsize"] = 20, 20
     param = {"grid.linewidth": 1.6,
             "grid.color": "lightgray",
             "axes.linewidth": 1.6,
@@ -27,7 +28,7 @@ def plot_kb(seq_alpha_col,seq_beta_row,k_value,p_penalty):
     headh = seq_alpha_col
     headv = seq_beta_row
 
-    score_matrix, pt_mat, arrows = kband(seq_alpha_col,seq_beta_row,k_value,p_penalty,score_only=False)
+    score_matrix, pt_mat, arrows = needleman_wunsch(seq_alpha_col,seq_beta_row,p_penalty,score_only=False)
 
     # Plot
     fig, ax = plt.subplots()
@@ -79,12 +80,12 @@ def plot_kb(seq_alpha_col,seq_beta_row,k_value,p_penalty):
     #------------
     
     plt.gca().set_aspect('auto')
-    plt.savefig('output/output-kb.pdf', dpi=600)
+    time = '{:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
+    plt.savefig("output/needleman_wunsch/output-nw_"+time+".pdf", dpi=600)
     #plt.show()
 
 if __name__ == '__main__':
-    alpha = Seq("MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHG")
-    beta = Seq("MVHLTPEEKSAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLSTPDAVMGNPK")
+    alpha = Seq("GCATGCU")
+    beta = Seq("GATTACA")
     penalty = {'MATCH': 1, 'MISMATCH': -1, 'GAP': -1}
-    k_value = 2
-    plot_kb(alpha,beta,k_value,penalty)
+    plot_nw(alpha,beta,penalty)

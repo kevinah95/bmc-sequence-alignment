@@ -1,14 +1,15 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
+import datetime
 from Bio.Seq import Seq
 if __name__ == '__main__':
-    from algorithms.needleman_wunsch import needleman_wunsch
+    from kband import kband
 else:
-    from algorithms.needleman_wunsch import needleman_wunsch
+    from .kband import kband
 
 #-------------------------------
-def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
+def plot_kb(seq_alpha_col,seq_beta_row,k_value,p_penalty):
 
     if not seq_alpha_col or not seq_beta_row:
         print("Alguna de las secuencias está vacía.")
@@ -27,7 +28,7 @@ def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
     headh = seq_alpha_col
     headv = seq_beta_row
 
-    score_matrix, pt_mat, arrows = needleman_wunsch(seq_alpha_col,seq_beta_row,p_penalty,score_only=False)
+    score_matrix, pt_mat, arrows = kband(seq_alpha_col,seq_beta_row,k_value,p_penalty,score_only=False)
 
     # Plot
     fig, ax = plt.subplots()
@@ -79,11 +80,13 @@ def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
     #------------
     
     plt.gca().set_aspect('auto')
-    plt.savefig('output/output-nw.pdf', dpi=600)
+    time = '{:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
+    plt.savefig("output/kband/output-kb_"+time+".pdf", dpi=600)
     #plt.show()
 
 if __name__ == '__main__':
     alpha = Seq("MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHG")
     beta = Seq("MVHLTPEEKSAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLSTPDAVMGNPK")
     penalty = {'MATCH': 1, 'MISMATCH': -1, 'GAP': -1}
-    plot_nw(alpha,beta,penalty)
+    k_value = 2
+    plot_kb(alpha,beta,k_value,penalty)
