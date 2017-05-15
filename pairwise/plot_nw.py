@@ -3,9 +3,9 @@ import matplotlib.ticker as ticker
 import numpy as np
 from Bio.Seq import Seq
 if __name__ == '__main__':
-    from needleman_wunsch import needleman_wunsch
+    from algorithms.needleman_wunsch import needleman_wunsch
 else:
-    from .needleman_wunsch import needleman_wunsch
+    from algorithms.needleman_wunsch import needleman_wunsch
 
 #-------------------------------
 def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
