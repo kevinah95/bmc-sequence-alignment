@@ -46,6 +46,52 @@ def insideBand(i, j, k):
 
 
 def kband(seq_alpha_col, seq_beta_row, k_value, p_penalty, score_only):
+    """
+    Llena las matrices de acuerdo al algoritmo KBand.
+
+    Esta función realiza las operaciones necesarias para lograr el 
+    alineamiento KBand entre dos secuencias. 
+    Este busca penalizar los gaps internos del alineamiento, 
+    no así los que se encuentre al inicio o final de alguna de las secuencias. 
+    Para ello, se debe realizar:
+        1. La colocación de ceros la primera fila y columna.
+        2. Iniciar el traceback en el mayor valor de la última columna o fila 
+           hasta llegar a una casilla de valor cero.
+
+
+    Al realizar alineamientos, se puede especificar el match score,
+    el mismath score y el gap penalty. El match score indica la compatibilidad 
+    entre un alineamiento entre dos caracteres en las secuencias.
+    Los caracteres altamente compatibles deben recibir la puntuación del match, 
+    y los que no sean compatibles deben recibir la puntuación de mismatch. 
+    Los gaps deben ser negativos.
+
+    Parameters
+    ----------
+    seq_alpha_col : Bio.Seq.Seq
+        Primer secuencia a ser comparada
+    
+    seq_beta_row : Bio.Seq.Seq
+        Segunda secuencia a ser comparada
+    
+    k_value : int
+        Valor k requerido en el algoritmo
+    
+    p_penalty : dict(str -> int)
+        Diccionario que contiene los valores de MATCH, MISMATCH y GAP
+
+    score_only : boolean
+        Cuando es True solamente muestra el alineamiento y el valor del score, 
+        así se utiliza menos memoria y es más rápido.
+        Cuando es False guarda la matriz y la traza que recorre el alineamiento
+        en la carpeta `/output`.
+
+    Returns
+    -------
+    np.array, np.array, np.array
+        Tres arreglos que contienen los puntajes, los punteros y la matriz del mejor alineamiento
+
+    """
     if not seq_alpha_col or not seq_beta_row:
         print("Alguna de las secuencias está vacía.")
         return
@@ -53,7 +99,7 @@ def kband(seq_alpha_col, seq_beta_row, k_value, p_penalty, score_only):
     penalty = p_penalty
     m, n = len(seq_beta_row), len(seq_alpha_col)  # length of two sequences
     if m != n:
-        print("LAs secuencias no tienen el mismo largo.")
+        print("Las secuencias no tienen el mismo largo.")
         return
     #---------
     pointer_mat = []  # pointer matrix

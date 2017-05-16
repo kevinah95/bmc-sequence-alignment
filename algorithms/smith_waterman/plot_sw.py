@@ -85,7 +85,7 @@ def plot_sw(seq_alpha_col,seq_beta_row,p_penalty):
     #plt.show()
 
 if __name__ == '__main__':
-    alpha = Seq("GTACGTCGG")
-    beta = Seq("ATACATGTCT")
-    penalty = {'MATCH': 8, 'MISMATCH': -5, 'GAP': -3}
+    alpha = Seq("ACTCA")
+    beta = Seq("TTCAT")
+    penalty = {'MATCH': 1, 'MISMATCH': -1, 'GAP': -2}
     plot_sw(alpha,beta,penalty)

@@ -51,6 +51,44 @@ def next_move(score_matrix, i, j):
 
 
 def smith_waterman(seq_alpha_col, seq_beta_row,p_penalty, score_only):
+    """
+    Llena las matrices de acuerdo al algoritmo Smith-Waterman.
+
+    Esta función realiza las operaciones necesarias para lograr el 
+    alineamiento local (Smith-Waterman) entre dos secuencias. 
+    Un alineamiento local encuentra la mejor concordancia entre 
+    los caracteres de dos subsecuencias de las secuencias principales.
+
+    Al realizar alineamientos, se puede especificar el match score,
+    el mismath score y el gap penalty. El match score indica la compatibilidad 
+    entre un alineamiento entre dos caracteres en las secuencias.
+    Los caracteres altamente compatibles deben recibir la puntuación del match, 
+    y los que no sean compatibles deben recibir la puntuación de mismatch. 
+    Los gaps deben ser negativos.
+
+    Parameters
+    ----------
+    seq_alpha_col : Bio.Seq.Seq
+        Primer secuencia a ser comparada
+    
+    seq_beta_row : Bio.Seq.Seq
+        Segunda secuencia a ser comparada
+    
+    p_penalty : dict(str -> int)
+        Diccionario que contiene los valores de MATCH, MISMATCH y GAP
+
+    score_only : boolean
+        Cuando es True solamente muestra el alineamiento y el valor del score, 
+        así se utiliza menos memoria y es más rápido.
+        Cuando es False guarda la matriz y la traza que recorre el alineamiento
+        en la carpeta `/output`.
+
+    Returns
+    -------
+    np.array, np.array, np.array
+        Tres arreglos que contienen los puntajes, los punteros y la matriz del mejor alineamiento
+
+    """
     if not seq_alpha_col or not seq_beta_row:
         print("Alguna de las secuencias está vacía.")
         return
@@ -119,17 +157,17 @@ def smith_waterman(seq_alpha_col, seq_beta_row,p_penalty, score_only):
             align2 += seq_alpha_col[j - 1]
             i -= 1
             j -= 1
-            score=score+score_diagonal
+            score=score+penalty['MATCH']
         elif move == UP:
-            align1 += '-'
-            align2 += seq_alpha_col[j - 1]
-            j -= 1
-            score=score+score_up
-        else:
             align1 += seq_beta_row[i - 1]
             align2 += '-'
             i -= 1
-            score=score+score_left
+            score=score+penalty['GAP']
+        else:
+            align1 += '-'
+            align2 += seq_alpha_col[j - 1]
+            j -= 1
+            score=score+penalty['GAP']
 
         if not score_only:
             a[:, 2:] = j, i

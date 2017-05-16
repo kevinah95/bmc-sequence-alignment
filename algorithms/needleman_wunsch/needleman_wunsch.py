@@ -42,6 +42,44 @@ def finalize(align1, align2, score):
 
 
 def needleman_wunsch(seq_alpha_col, seq_beta_row, p_penalty, score_only):
+    """
+    Llena las matrices de acuerdo al algoritmo Needleman-Wunsch.
+
+    Esta función realiza las operaciones necesarias para lograr el 
+    alineamiento global (Needleman-Wunsch) entre dos secuencias. 
+    Un alineamiento global encuentra la mejor concordancia entre 
+    todos los caracteres de las dos secuencias.
+
+    Al realizar alineamientos, se puede especificar el match score,
+    el mismath score y el gap penalty. El match score indica la compatibilidad 
+    entre un alineamiento entre dos caracteres en las secuencias.
+    Los caracteres altamente compatibles deben recibir la puntuación del match, 
+    y los que no sean compatibles deben recibir la puntuación de mismatch. 
+    Los gaps deben ser negativos.
+
+    Parameters
+    ----------
+    seq_alpha_col : Bio.Seq.Seq
+        Primer secuencia a ser comparada
+    
+    seq_beta_row : Bio.Seq.Seq
+        Segunda secuencia a ser comparada
+    
+    p_penalty : dict(str -> int)
+        Diccionario que contiene los valores de MATCH, MISMATCH y GAP
+
+    score_only : boolean
+        Cuando es True solamente muestra el alineamiento y el valor del score, 
+        así se utiliza menos memoria y es más rápido.
+        Cuando es False guarda la matriz y la traza que recorre el alineamiento
+        en la carpeta `/output`.
+
+    Returns
+    -------
+    np.array, np.array, np.array
+        Tres arreglos que contienen los puntajes, los punteros y la matriz del mejor alineamiento
+
+    """
     if not seq_alpha_col or not seq_beta_row:
         print("Alguna de las secuencias está vacía.")
         return

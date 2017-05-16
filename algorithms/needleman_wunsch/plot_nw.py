@@ -85,7 +85,7 @@ def plot_nw(seq_alpha_col,seq_beta_row,p_penalty):
     #plt.show()
 
 if __name__ == '__main__':
-    alpha = Seq("GCATGCU")
-    beta = Seq("GATTACA")
-    penalty = {'MATCH': 1, 'MISMATCH': -1, 'GAP': -1}
+    alpha = Seq("ACTCA")
+    beta = Seq("TTCAT")
+    penalty = {'MATCH': 1, 'MISMATCH': -1, 'GAP': -2}
     plot_nw(alpha,beta,penalty)

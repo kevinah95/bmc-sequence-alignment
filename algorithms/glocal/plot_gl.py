@@ -4,20 +4,17 @@ import numpy as np
 import datetime
 from Bio.Seq import Seq
 if __name__ == '__main__':
-    from kband import kband
+    from glocal import glocal
 else:
-    from .kband import kband
+    from .glocal import glocal
 
 #-------------------------------
-def plot_kb(seq_alpha_col,seq_beta_row,k_value,p_penalty):
+def plot_gl(seq_alpha_col,seq_beta_row,p_penalty):
 
     if not seq_alpha_col or not seq_beta_row:
         print("Alguna de las secuencias está vacía.")
         return
-    m, n = len(seq_beta_row), len(seq_alpha_col)  # length of two sequences
-    if m != n:
-        print("Las secuencias no tienen el mismo largo.")
-        return
+
     
     plt.rcParams["figure.figsize"] = 18, 18
     param = {"grid.linewidth": 1.6,
@@ -31,7 +28,7 @@ def plot_kb(seq_alpha_col,seq_beta_row,k_value,p_penalty):
     headh = seq_alpha_col
     headv = seq_beta_row
 
-    score_matrix, pt_mat, arrows = kband(seq_alpha_col,seq_beta_row,k_value,p_penalty,score_only=False)
+    score_matrix, pt_mat, arrows = glocal(seq_alpha_col,seq_beta_row,p_penalty,score_only=False)
 
     # Plot
     fig, ax = plt.subplots()
@@ -84,12 +81,11 @@ def plot_kb(seq_alpha_col,seq_beta_row,k_value,p_penalty):
     
     plt.gca().set_aspect('auto')
     time = '{:%Y-%m-%d_%H-%M-%S}'.format(datetime.datetime.now())
-    plt.savefig("output/kband/output-kb_"+time+".pdf", dpi=600)
+    plt.savefig("output/glocal/output-gl_"+time+".pdf", dpi=600)
     #plt.show()
 
 if __name__ == '__main__':
     alpha = Seq("ACTCA")
     beta = Seq("TTCAT")
     penalty = {'MATCH': 1, 'MISMATCH': -1, 'GAP': -2}
-    k_value = 2
-    plot_kb(alpha,beta,k_value,penalty)
+    plot_gl(alpha,beta,penalty)
